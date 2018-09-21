@@ -94,7 +94,18 @@ class QueryStringTwigExtension extends \Twig_Extension
     {
         $currentParams = $this->getCurrentParams($url);
 
-        $merged = array_merge($currentParams, $addedParams);
+        $paramsToMerge = [];
+
+        if ( gettype(array_values($addedParams)[0]) == 'array' ) {
+            $paramsToMerge = $addedParams;
+        } else {
+            $paramsToMerge[] = $addedParams;
+        }
+
+        $merged = $currentParams;
+        foreach ($paramsToMerge as $paramValue) {
+            $merged = array_merge($merged, $paramValue);
+        }
 
         return $this->build($merged, $url);
     }
